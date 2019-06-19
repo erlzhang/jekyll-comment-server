@@ -88,7 +88,8 @@ date: ${datetime}
 }
 
 API.prototype.postComment = async function (files, res) {
-  const { user, repo, branch, token } = config.github
+  const token = process.env.GITHUB_TOKEN
+  const { user, repo, branch } = config.github
 
   const github = new Github({
     auth: token
