@@ -22,6 +22,8 @@ API.prototype.serve = function () {
 
   this.server.post("/post-comment", (req, res) => {
 
+    console.log(req.hostname)
+
     if ( req.hostname != config.domain ) {
       return res.status(403).send("Not Allowed!")
     }
