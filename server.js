@@ -27,6 +27,10 @@ API.prototype.serve = function () {
 
     const { options, fields } = req.body
 
+    this.result = {
+      fields: fields
+    }
+
     if ( !options || !options["slug"] ) {
       return res.status(402).send("Missing options!")
     }
@@ -68,6 +72,8 @@ API.prototype.createFile = function (slug, fields) {
   const timestamp = Date.now()
   const datetime = Math.floor( timestamp / 1000 )
   const { name, parent, email, url, message } = fields
+
+  this.result.fields["date"] = datetime
 
   const path = `_data/comments/${slug}/comment-${timestamp}.yml`
   const content = `_id: ${uuid()}
@@ -130,7 +136,7 @@ API.prototype.postComment = async function (files, res) {
     })
   })
   .then(() => {
-    res.send("ok")
+    res.json(this.result)
   })
   .catch((err) => {
     console.error(err)
