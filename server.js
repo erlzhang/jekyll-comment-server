@@ -5,6 +5,7 @@ const config = require('./config')
 const Github = require("@octokit/rest")
 const uuid = require('uuid/v1')
 const cors = require('cors')
+const yaml = require('js-yaml')
 
 const API = function () {
   this.port = config.port
@@ -26,10 +27,6 @@ API.prototype.serve = function () {
     console.log("Start to check params.")
 
     const { options, fields } = req.body
-
-    this.result = {
-      fields: fields
-    }
 
     if ( !options || !options["slug"] ) {
       return res.status(402).send("Missing options!")
@@ -67,24 +64,24 @@ API.prototype.checkFieldsValid = function (fields) {
 }
 
 API.prototype.createFile = function (slug, fields) {
-  this.fields = fields
-
   const timestamp = Date.now()
   const datetime = Math.floor( timestamp / 1000 )
   const { name, parent, email, url, message } = fields
 
-  this.result.fields["date"] = datetime
-  this.result.fileds["email"] = md5(email)
+  this.output = {
+    _id: uuid(),
+    parent: parent,
+    name: name,
+    email: md5(email),
+    url: url,
+    message: message,
+    date: datetime
+  }
 
   const path = `_data/comments/${slug}/comment-${timestamp}.yml`
-  const content = `_id: ${uuid()}
-parent: '${parent}'
-name: ${name}
-email: ${md5(email)}
-url: ${url}
-message: ${message}
-date: ${datetime}
-`
+  const content = yaml.safeDump(this.output)
+
+  console.log(content)
 
   return [{
     path: path,
@@ -123,7 +120,7 @@ API.prototype.postComment = async function (files, res) {
     return github.git.createCommit({
       owner: user,
       repo: repo,
-      message: `New Comment by ${this.fields.name}`,
+      message: `New Comment by ${this.output.name}`,
       tree: data.sha,
       parents: [baseTree]
     })
@@ -137,7 +134,9 @@ API.prototype.postComment = async function (files, res) {
     })
   })
   .then(() => {
-    res.json(this.result)
+    res.json({
+      fields: this.output
+    })
   })
   .catch((err) => {
     console.error(err)
