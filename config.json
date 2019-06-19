@@ -1,10 +1,10 @@
 {
-  "port": 5000,
+  "port": 80,
   "domain": "erl.im",
   "github": {
     "user": "erlzhang",
     "repo": "persephone",
-    "branch": "comment",
+    "branch": "master",
     "token": "c46c1d8f54537b47e275cab2b7e468e319284eab"
   }
 }
