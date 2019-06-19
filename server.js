@@ -47,7 +47,7 @@ API.prototype.serve = function () {
     this.postComment(files, res)
   })
 
-  this.server.listen(this.port, () => {
+  this.server.listen(process.env.PORT || this.port, () => {
     console.log(`Start app listening on port ${this.port}`)
   })
 }
