@@ -23,6 +23,8 @@ API.prototype.serve = function () {
 
   this.server.post("/post-comment", (req, res) => {
 
+    console.log("Start to check params.")
+
     const { options, fields } = req.body
 
     if ( !options || !options["slug"] ) {
@@ -37,12 +39,12 @@ API.prototype.serve = function () {
     if ( !isFieldsValid ) {
       return res.status(402).send(err)
     }
-    return
 
+    console.log("Start to create file.")
     const files = this.createFile(options.slug, fields)
     
+    console.log("Start to post comment to github.")
     this.postComment(files, res)
-    console.log("end")
   })
 
   this.server.listen(process.env.PORT || this.port, () => {
