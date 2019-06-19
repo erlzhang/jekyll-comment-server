@@ -74,6 +74,7 @@ API.prototype.createFile = function (slug, fields) {
   const { name, parent, email, url, message } = fields
 
   this.result.fields["date"] = datetime
+  this.result.fileds["email"] = md5(email)
 
   const path = `_data/comments/${slug}/comment-${timestamp}.yml`
   const content = `_id: ${uuid()}
