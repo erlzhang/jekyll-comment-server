@@ -21,6 +21,11 @@ API.prototype.serve = function () {
   this.server.get('/', (req, res) => res.send('Hello World!'))
 
   this.server.post("/post-comment", (req, res) => {
+
+    if ( req.hostname != config.domain ) {
+      return res.status(403).send("Not Allowed!")
+    }
+
     const { options, fields } = req.body
 
     if ( !options || !options["slug"] ) {
@@ -35,6 +40,7 @@ API.prototype.serve = function () {
     if ( !isFieldsValid ) {
       return res.status(402).send(err)
     }
+    return
 
     const files = this.createFile(options.slug, fields)
     
