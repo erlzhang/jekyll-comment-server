@@ -20,6 +20,7 @@
   "dependencies": {
     "@octokit/rest": "^16.28.2",
     "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "md5": "^2.2.1",
     "uuid": "^3.3.2"

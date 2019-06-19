@@ -4,14 +4,15 @@ const md5 = require('md5')
 const config = require('./config')
 const Github = require("@octokit/rest")
 const uuid = require('uuid/v1')
+const cors = require('cors')
 
 const API = function () {
   this.port = config.port
   this.server = express()
-  this.server.use( (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", config.domain)
-    next()
-  } )
+  this.server.use(cors({
+    origin: config.allowedDomains,
+    methods: ['GET', 'POST']
+  }))
 }
 
 API.prototype.constructor = API
@@ -21,12 +22,6 @@ API.prototype.serve = function () {
   this.server.get('/', (req, res) => res.send('Hello World!'))
 
   this.server.post("/post-comment", (req, res) => {
-
-    console.log(req.hostname)
-
-    if ( req.hostname != config.domain ) {
-      return res.status(403).send("Not Allowed!")
-    }
 
     const { options, fields } = req.body
 
@@ -47,6 +42,7 @@ API.prototype.serve = function () {
     const files = this.createFile(options.slug, fields)
     
     this.postComment(files, res)
+    console.log("end")
   })
 
   this.server.listen(process.env.PORT || this.port, () => {
