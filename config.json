@@ -1,6 +1,6 @@
 {
   "port": 5000,
-  "allowedDomains": ["https://erl.im"],
+  "domain": "https://erl.im",
   "github": {
     "user": "erlzhang",
     "repo": "persephone",

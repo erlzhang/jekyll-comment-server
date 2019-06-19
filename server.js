@@ -10,7 +10,7 @@ const API = function () {
   this.port = config.port
   this.server = express()
   this.server.use(cors({
-    origin: config.allowedDomains,
+    origin: config.domain,
     methods: ['GET', 'POST']
   }))
 }
