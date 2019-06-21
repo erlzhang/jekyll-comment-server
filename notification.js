@@ -24,8 +24,9 @@ Notification.prototype.notify = function (fields, options) {
     html: `
 <html>
   <body>
-    <p>文章 <a href="${url}" target="_blank">${title}</a> 有新评论了:</p>
+    <h4 style="margin-bottom: 20px;">文章 <a href="${url}" target="_blank">${title}</a> 有新评论了:</h4>
     <p>${message}</p>
+    <p><em>--- by ${name}</em></p>
   </body>
 </html>
       ` 
