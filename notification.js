@@ -24,7 +24,6 @@ Notification.prototype.notify = function (fields, options) {
     html: `
 <html>
   <body>
-    <h3>来自 ${name} 的评论</h3>
     <p>文章 <a href="${url}" target="_blank">${title}</a> 有新评论了:</p>
     <p>${message}</p>
   </body>
@@ -33,6 +32,7 @@ Notification.prototype.notify = function (fields, options) {
   }
 
   return new Promise((resolve, reject) => {
+    console.log("Start to notify author.")
     this.agent.messages().send(data, (err, body) => {
       if (err) {
         console.log(err)
