@@ -1,6 +1,7 @@
 {
   "port": 5000,
-  "domain": "https://erl.im",
+  "site": "https://erl.im",
+  "title": "叶夕青兮",
   "github": {
     "user": "erlzhang",
     "repo": "persephone",

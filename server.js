@@ -7,13 +7,17 @@ const uuid = require('uuid/v1')
 const cors = require('cors')
 const yaml = require('js-yaml')
 
+const notification = require('./notification')
+
 const API = function () {
   this.port = config.port
   this.server = express()
   this.server.use(cors({
-    origin: config.domain,
+    origin: config.site,
     methods: ['GET', 'POST']
   }))
+
+  this.notification = new notification()
 }
 
 API.prototype.constructor = API
@@ -46,6 +50,10 @@ API.prototype.serve = function () {
     
     console.log("Start to post comment to github.")
     this.postComment(files, res)
+
+    if ( this.notification ) {
+      this.notification.notify(fields, options)
+    }
   })
 
   this.server.listen(process.env.PORT || this.port, () => {
