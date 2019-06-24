@@ -55,7 +55,7 @@ Notification.prototype.notify = function (fields, options) {
   .box {
     max-width: 600px;
     width: 100%;
-    margin: 45px auto 20px auto;
+    margin: 20px auto;
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
     border-radius: 4px;
     padding: 20px;
@@ -85,7 +85,7 @@ Notification.prototype.notify = function (fields, options) {
       </div>
       <p class="author"><em>--- by ${name}</em></p>
     </div>
-    <footer class="footer">💌  From <a href="${site.url}">${site.title}</a></footer>
+    <div class="footer">💌  From <a href="${site.url}">${site.title}</a><div>
   </body>
 </html>
       ` 
