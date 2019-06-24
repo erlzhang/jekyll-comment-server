@@ -16,14 +16,50 @@ const Notification = function () {
 }
 
 Notification.prototype.notify = function (fields, options) {
-  const { name, message } = fields
-  const { url, title } = options
+  const { name } = fields
   const { site } = config
+  const email = this.createEmail("notify", fields, options)
   const data = {
     from: `${site.owner} <admin@${site.domain}>`,
     to: process.env.MAIL, 
     subject: `来自 ${name} 的评论`,
-    html: `
+    html: email
+  }
+
+  return new Promise((resolve, reject) => {
+    console.log("Start to notify author.")
+    this.agent.messages().send(data, (err, body) => {
+      if (err) {
+        console.log(err)
+        return reject(err)
+      }
+
+      return resolve(body)
+    })
+  })
+}
+
+Notification.prototype.reply = function (email, fields) {
+}
+
+Notification.prototype.createEmail = function (type, fields, options) {
+  const { name, message } = fields
+  const { title, url } = options
+  const { site } = config
+
+  let reciper, msgTitle
+
+  const anchor = `<a href="${url}">${title}</a>`
+
+  if ( type == "notify" ) {
+    reciper = site.owner
+    msgTitle = `您的文章 ${anchor} 有了新评论：`
+  } else {
+    reciper = ""
+    msgTitle = `您在 ${anchor} 的评论有了新的回复：`
+  }
+
+  return `
 <html>
   <style>
   * {
@@ -78,8 +114,8 @@ Notification.prototype.notify = function (fields, options) {
   </style>
   <body>
     <div class="box">
-      <p>💕 Dear${site.owner}:</p>
-      <h4 style="margin-bottom: 20px;">您的文章 <a href="${url}">${title}</a> 有了新评论：</h4>
+      <p>💕Dear ${reciper}:</p>
+      <h4 style="margin-bottom: 20px;">${msgTitle}</h4>
       <div class="content">
         ${marked(message)}
       </div>
@@ -88,23 +124,7 @@ Notification.prototype.notify = function (fields, options) {
     <div class="footer">💌  From <a href="${site.url}">${site.title}</a><div>
   </body>
 </html>
-      ` 
-  }
-
-  return new Promise((resolve, reject) => {
-    console.log("Start to notify author.")
-    this.agent.messages().send(data, (err, body) => {
-      if (err) {
-        console.log(err)
-        return reject(err)
-      }
-
-      return resolve(body)
-    })
-  })
-}
-
-Notification.prototype.reply = function (email, fields) {
+  `
 }
 
 module.exports = Notification
