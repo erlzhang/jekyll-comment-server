@@ -20,7 +20,7 @@ Notification.prototype.notify = function (fields, options) {
   const { url, title } = options
   const { site } = config
   const data = {
-    from: '${site.owner} <admin@${site.domain}>',
+    from: `${site.owner} <admin@${site.domain}>`,
     to: process.env.MAIL, 
     subject: `来自 ${name} 的评论`,
     html: `
