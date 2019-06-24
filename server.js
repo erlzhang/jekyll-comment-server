@@ -13,7 +13,7 @@ const API = function () {
   this.port = config.port
   this.server = express()
   this.server.use(cors({
-    origin: config.site,
+    origin: config.site.url,
     methods: ['GET', 'POST']
   }))
 
