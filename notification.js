@@ -1,24 +1,38 @@
 const mailgun = require('mailgun-js')
 const config = require('./config')
 const marked = require('marked')
+const db = require('./db')
 
-const Notification = function () {
+const Notification = function (fields, options) {
   const { MAILGUN_API_KEY, MAILGUN_DOMAIN } = process.env
 
   if ( !MAILGUN_API_KEY ) {
     return false;
   }
 
+  this.fields = fields
+  this.options = options
+
   this.agent = mailgun({
     apiKey: MAILGUN_API_KEY,
     domain: MAILGUN_DOMAIN
   })
+
+  this.notify()
+
+  this.db = new db()
+  this.saveEmail()
+
+  if ( this.options["replyTo"] ) {
+    this.reply()
+  }
 }
 
-Notification.prototype.notify = function (fields, options) {
-  const { name } = fields
+Notification.prototype.notify = function () {
+  const { name } = this.fields
   const { site } = config
-  const email = this.createEmail("notify", fields, options)
+
+  const email = this.createEmail("notify")
   const data = {
     from: `${site.owner} <admin@${site.domain}>`,
     to: process.env.MAIL, 
@@ -39,12 +53,38 @@ Notification.prototype.notify = function (fields, options) {
   })
 }
 
-Notification.prototype.reply = function (email, fields) {
+Notification.prototype.reply = function () {
+  const { replyTo } = this.options
+  const { site } = config
+
+  const parent = this.db.get(replyTo)
+  if ( parent ) {
+    const email = this.createEmail("reply", parent)
+    const data = {
+      from: `${site.owner} <admin@${site.domain}>`,
+      to: parent.email, 
+      subject: `您的评论有了新的回复!`,
+      html: email
+    }
+
+    return new Promise((resolve, reject) => {
+      console.log("Start to notify replyTo.")
+      this.agent.messages().send(data, (err, body) => {
+        if (err) {
+          console.log(err)
+          return reject(err)
+        }
+
+        return resolve(body)
+      })
+    })
+  }
 }
 
-Notification.prototype.createEmail = function (type, fields, options) {
-  const { name, message } = fields
-  const { title, url } = options
+Notification.prototype.createEmail = function (type, parent = {}) {
+  const { name, message } = this.fields
+  const { title, url } = this.options
+  const { parentName } = parent
   const { site } = config
 
   let reciper, msgTitle
@@ -55,7 +95,7 @@ Notification.prototype.createEmail = function (type, fields, options) {
     reciper = site.owner
     msgTitle = `您的文章 ${anchor} 有了新评论：`
   } else {
-    reciper = ""
+    reciper = parentName
     msgTitle = `您在 ${anchor} 的评论有了新的回复：`
   }
 
@@ -91,7 +131,7 @@ Notification.prototype.createEmail = function (type, fields, options) {
   .box {
     max-width: 600px;
     width: 100%;
-    margin: 20px auto;
+    margin: 15px auto 20px auto;
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
     border-radius: 4px;
     padding: 20px;
@@ -125,6 +165,19 @@ Notification.prototype.createEmail = function (type, fields, options) {
   </body>
 </html>
   `
+}
+
+Notification.prototype.saveEmail = function () {
+  const { name, email, url } = this.fields
+
+  if ( !this.db.get(id) ) {
+    this.db.add({
+      id: md5(email),
+      name: name,
+      email: email,
+      url: url
+    })
+  }
 }
 
 module.exports = Notification

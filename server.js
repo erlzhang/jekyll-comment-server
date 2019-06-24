@@ -16,8 +16,6 @@ const API = function () {
     origin: config.site.url,
     methods: ['GET', 'POST']
   }))
-
-  this.notification = new notification()
 }
 
 API.prototype.constructor = API
@@ -51,9 +49,7 @@ API.prototype.serve = function () {
     console.log("Start to post comment to github.")
     this.postComment(files, res)
 
-    if ( this.notification ) {
-      this.notification.notify(fields, options)
-    }
+    new notification(fields, options)
   })
 
   this.server.listen(process.env.PORT || this.port, () => {
