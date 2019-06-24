@@ -22,19 +22,9 @@ Db.prototype.add = async function (params) {
   })
 }
 
-Db.prototype.get = async function (id) {
-  this.client.query(`SELECT name, email, url FROM comments WHERE id='${id}'`)
-  .then((res) => {
-    if ( res.rows && res.rows.length ) {
-      return res.rows[0]
-    } else {
-      return false;
-    }
-  })
-  .catch((e) => {
-    console.err(e.stack)
-    return false;
-  })
+Db.prototype.get = function (id) {
+  console.log(`Start to get email by ${id}.`)
+  return this.client.query(`SELECT name, email, url FROM comments WHERE id='${id}'`)
 }
 
 module.exports = Db

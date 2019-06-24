@@ -59,34 +59,39 @@ Notification.prototype.reply = function () {
   const { replyTo } = this.options
   const { site } = config
 
-  const parent = this.db.get(replyTo)
-  if ( parent ) {
-    const email = this.createEmail("reply", parent)
-    const data = {
-      from: `${site.owner} <admin@${site.domain}>`,
-      to: parent.email, 
-      subject: `您的评论有了新的回复!`,
-      html: email
-    }
+  this.db.get(replyTo)
+  .then((res) => {
+    if ( res.rows && res.rows.length ) {
+      const parent = res.rows[0]
+      const email = this.createEmail("reply", parent)
+      const data = {
+        from: `${site.owner} <admin@${site.domain}>`,
+        to: parent.email, 
+        subject: `您的评论有了新的回复!`,
+        html: email
+      }
 
-    return new Promise((resolve, reject) => {
-      console.log("Start to notify replyTo.")
-      this.agent.messages().send(data, (err, body) => {
-        if (err) {
-          console.log(err)
-          return reject(err)
-        }
+      return new Promise((resolve, reject) => {
+        console.log("Start to notify replyTo.")
+        this.agent.messages().send(data, (err, body) => {
+          if (err) {
+            console.log(err)
+            return reject(err)
+          }
 
-        return resolve(body)
+          return resolve(body)
+        })
       })
-    })
-  }
+    }
+  })
+  .catch((e) => {
+    console.log(e.stack)
+  })
 }
 
 Notification.prototype.createEmail = function (type, parent = {}) {
   const { name, message } = this.fields
   const { title, url } = this.options
-  const { parentName } = parent
   const { site } = config
 
   let reciper, msgTitle
@@ -97,7 +102,7 @@ Notification.prototype.createEmail = function (type, parent = {}) {
     reciper = site.owner
     msgTitle = `您的文章 ${anchor} 有了新评论：`
   } else {
-    reciper = parentName
+    reciper = parent.name 
     msgTitle = `您在 ${anchor} 的评论有了新的回复：`
   }
 
@@ -173,14 +178,13 @@ Notification.prototype.saveEmail = function () {
   const { name, email, url } = this.fields
   const id = md5(email)
 
-  if ( !this.db.get(id) ) {
-    this.db.add({
-      id: id,
-      name: name,
-      email: email,
-      url: url
-    })
-  }
+  console.log("Start to save email to db.")
+  this.db.add({
+    id: id,
+    name: name,
+    email: email,
+    url: url
+  })
 }
 
 module.exports = Notification
