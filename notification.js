@@ -169,10 +169,11 @@ Notification.prototype.createEmail = function (type, parent = {}) {
 
 Notification.prototype.saveEmail = function () {
   const { name, email, url } = this.fields
+  const id = md5(email)
 
   if ( !this.db.get(id) ) {
     this.db.add({
-      id: md5(email),
+      id: id,
       name: name,
       email: email,
       url: url
