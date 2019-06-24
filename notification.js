@@ -1,7 +1,9 @@
 const mailgun = require('mailgun-js')
-const config = require('./config')
+const md5 = require('md5')
 const marked = require('marked')
+
 const db = require('./db')
+const config = require('./config')
 
 const Notification = function (fields, options) {
   const { MAILGUN_API_KEY, MAILGUN_DOMAIN } = process.env
