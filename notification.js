@@ -96,7 +96,11 @@ Notification.prototype.createEmail = function (type, parent = {}) {
 
   let reciper, msgTitle
 
-  const anchor = `<a href="https://erl.im${url}">${title}</a>`
+	let anchorUrl = url
+	if ( url.indexOf("http") == -1 ) {
+		anchorUrl = site.url + url
+	}
+  const anchor = `<a href="${anchorUrl}">${title}</a>`
 
   if ( type == "notify" ) {
     reciper = site.owner
