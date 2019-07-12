@@ -12,10 +12,18 @@ const notification = require('./notification')
 const API = function () {
   this.port = config.port
   this.server = express()
-  this.server.use(cors({
-    origin: config.site.url,
-    methods: ['GET', 'POST']
-  }))
+
+  // set cors
+  const whitelist = config.cors.allowed_domains
+  this.corsOptions = {
+    origin: function (origin, callback) {
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true)
+      } else {
+        callback(new Error("Not allowed by CORS"))
+      }
+    }
+  }
 }
 
 API.prototype.constructor = API
@@ -24,7 +32,7 @@ API.prototype.serve = function () {
   this.server.use( bodyParser.urlencoded({ extended: true }) )
   this.server.get('/', (req, res) => res.send('Hello World!'))
 
-  this.server.post("/post-comment", (req, res) => {
+  this.server.post("/post-comment", cors(this.corsOptions), (req, res, next) => {
 
     console.log("Start to check params.")
 

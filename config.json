@@ -3,12 +3,15 @@
   "github": {
     "user": "erlzhang",
     "repo": "erl.im",
-    "branch": "master"
+    "branch": "comment"
   },
   "site": {
     "title": "叶夕青兮",
     "domain": "erl.im",
     "url": "https://erl.im",
     "owner": "Erl"
+  },
+  "cors": {
+    "allowed_domains": ["https://erl.im"]
   }
 }
