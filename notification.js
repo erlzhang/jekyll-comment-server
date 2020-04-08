@@ -2,7 +2,7 @@ const mailgun = require('mailgun-js')
 const md5 = require('md5')
 const marked = require('marked')
 
-const db = require('./db')
+const db = require('./db-leancloud')
 const config = require('./config')
 
 const Notification = function (fields, options) {
