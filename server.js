@@ -1,4 +1,12 @@
 const express = require('express')
+var AV = require('leanengine');
+
+AV.init({
+  appId: process.env.LEANCLOUD_APP_ID,
+  appKey: process.env.LEANCLOUD_APP_KEY,
+  masterKey: process.env.LEANCLOUD_APP_MASTER_KEY
+});
+
 const bodyParser = require('body-parser')
 const md5 = require('md5')
 const config = require('./config')
@@ -12,6 +20,7 @@ const notification = require('./notification')
 const API = function () {
   this.port = config.port
   this.server = express()
+  this.server.use(AV.express())
 
   // set cors
   const whitelist = config.cors.allowed_domains
@@ -60,7 +69,7 @@ API.prototype.serve = function () {
     new notification(fields, options)
   })
 
-  this.server.listen(process.env.PORT || this.port, () => {
+  this.server.listen(process.env.LEANCLOUD_APP_PORT || this.port, () => {
     console.log(`Start app listening on port ${this.port}`)
   })
 }

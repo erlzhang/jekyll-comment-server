@@ -1,9 +1,10 @@
 const AV = require('leancloud-storage');
-const { DB_APP_ID, DB_APP_KEY, DB_LINK } = process.env
+console.log("env", process.env)
+const { LEANCLOUD_APP_ID, LEANCLOUD_APP_KEY, LEANCLOUD_DB_LINK } = process.env
 AV.init({
-  appId: DB_APP_ID,
-  appKey: DB_APP_KEY,
-  serverURL: DB_LINK
+  appId: LEANCLOUD_APP_ID,
+  appKey: LEANCLOUD_APP_KEY,
+  serverURL: LEANCLOUD_DB_LINK
 })
 
 const Comment = AV.Object.extend("comment");

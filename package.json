@@ -27,6 +27,7 @@
     "express": "^4.17.1",
     "js-yaml": "^3.13.1",
     "leancloud-storage": "^4.5.3",
+    "leanengine": "^3.6.0",
     "mailgun-js": "^0.22.0",
     "marked": "^0.8.2",
     "md5": "^2.2.1",
