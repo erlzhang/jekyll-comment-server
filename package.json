@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "A comment server for jekyll.",
   "main": "index.js",
+  "engines": {
+    "node": "8.x"
+  },
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -23,8 +26,9 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "js-yaml": "^3.13.1",
+    "leancloud-storage": "^4.5.3",
     "mailgun-js": "^0.22.0",
-    "marked": "^0.6.2",
+    "marked": "^0.8.2",
     "md5": "^2.2.1",
     "pg": "^7.11.0",
     "uuid": "^3.3.2"
