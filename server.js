@@ -41,8 +41,7 @@ API.prototype.serve = function () {
   this.server.use( bodyParser.urlencoded({ extended: true }) )
   this.server.get('/', (req, res) => res.send('Hello World!'))
 
-  this.server.post("/post-comment", (req, res, next) => {
-  //this.server.post("/post-comment", cors(this.corsOptions), (req, res, next) => {
+  this.server.post("/post-comment", cors(this.corsOptions), (req, res, next) => {
 
     console.log("Start to check params.")
 
@@ -63,7 +62,7 @@ API.prototype.serve = function () {
 
     console.log("Start to create file.")
     const files = this.createFile(options.slug, fields)
-
+    
     console.log("Start to post comment to github.")
     this.postComment(files, res)
 
