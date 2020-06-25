@@ -23,9 +23,13 @@ const API = function () {
   this.server.use(AV.express())
 
   // set cors
-  const whitelist = config.cors.allowed_domains
   this.corsOptions = {
     origin: function (origin, callback) {
+      if (!config.cors) {
+        return callback(null, true);
+      }
+
+      const whitelist = config.cors.allowed_domains
       if (whitelist.indexOf(origin) !== -1) {
         callback(null, true)
       } else {
@@ -55,6 +59,11 @@ API.prototype.serve = function () {
       return res.status(402).send("Missing fields!")
     }
 
+    const blacklistPassed = this.checkBlackList(fields);
+    if ( !blacklistPassed ) {
+      return res.status(403).send("Request not allowed!")
+    }
+
     const [isFieldsValid, err] = this.checkFieldsValid(fields)
     if ( !isFieldsValid ) {
       return res.status(402).send(err)
@@ -72,6 +81,22 @@ API.prototype.serve = function () {
   this.server.listen(process.env.LEANCLOUD_APP_PORT || this.port, () => {
     console.log(`Start app listening on port ${this.port}`)
   })
+}
+
+API.prototype.checkBlackList = function (fields) {
+  const blacklist = config.blacklist;
+  for (let field in blacklist) {
+    const val = fields[field];
+    const isValid = blacklist[field].every(item => {
+      return val.indexOf(item) === -1;
+    });
+    if (!isValid) {
+      console.error(`${val} is not allowed!`)
+      return false;
+    }
+  }
+
+  return true;
 }
 
 API.prototype.checkFieldsValid = function (fields) {
