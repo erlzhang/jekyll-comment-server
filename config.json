@@ -13,5 +13,17 @@
   },
   "cors": {
     "allowed_domains": ["https://erl.im"]
+  },
+  "blacklist": {
+    "url": [
+      "gforg.wordpress.com",
+      "tinyurl.com",
+      "j.mp",
+      "problemyzerekcja.pl.tl",
+      "trustlike.tw1.ru",
+      "jdhaksjhduiwf9.com",
+      "weroxed.blogaaja.fi",
+      "t.co"
+    ]
   }
 }
