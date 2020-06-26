@@ -55,6 +55,10 @@ API.prototype.serve = function () {
       return res.status(403).send("Request not allowed!")
     }
 
+    if (!this.checkContentValid(fields["message"])) {
+      return res.status(403).send("No Chinese word in your message!");
+    }
+
     const [isFieldsValid, err] = this.checkFieldsValid(fields)
     if ( !isFieldsValid ) {
       return res.status(402).send(err)
@@ -79,7 +83,7 @@ API.prototype.checkBlackList = function (fields) {
   for (let field in blacklist) {
     const val = fields[field];
     const isValid = blacklist[field].every(item => {
-      return val.indexOf(item) === -1;
+      return !val || val.indexOf(item) === -1;
     });
     if (!isValid) {
       console.error(`${val} is not allowed!`)
@@ -88,6 +92,11 @@ API.prototype.checkBlackList = function (fields) {
   }
 
   return true;
+}
+
+API.prototype.checkContentValid = function(content) {
+  const reg = new RegExp("[\u4e00-\u9fa5]", "g");
+  return reg.test(content);
 }
 
 API.prototype.checkFieldsValid = function (fields) {
