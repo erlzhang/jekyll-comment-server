@@ -12,7 +12,7 @@
     "owner": "Erl"
   },
   "cors": {
-    "allowed_domains": ["https://erl.im"]
+    "allowed_domains": ["https://erl.im", "http://erl.im", "https://yexiqingxi.com", "http://yexiqingxi.com"]
   },
   "blacklist": {
     "url": [
